@@ -1,0 +1,8 @@
+node_modules/
+dist/
+dist-ssr/
+.git/
+.gitignore
+Dockerfile
+*.local
+.DS_Store

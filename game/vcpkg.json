@@ -1,0 +1,25 @@
+{
+	"name": "transcendence",
+	"version": "1.0.0",
+	"dependencies" : [
+		"glm",
+		"entt",
+		"glaze",
+		"box3d"
+	],
+	"features": {
+		"server": {
+			"description": "Dependencies for the multiplayer server",
+			"dependencies": [
+				{
+					"name": "uwebsockets",
+					"platform": "!wasm32"
+				},
+				{
+					"name": "redis-plus-plus",
+					"platform": "!wasm32"
+				}
+			]
+		}
+	}
+}

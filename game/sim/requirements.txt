@@ -1,0 +1,7 @@
+rlgym-api==2.0.0
+rlgym-ppo @ git+https://github.com/AechPro/rlgym-ppo@4ffd2e924198bf4b2d59f4bf280b29919d7c07ea
+torch
+numpy
+matplotlib
+pybind11
+wandb

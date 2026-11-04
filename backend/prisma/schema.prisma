@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+}
+
+model PlayerAccount {
+  accountId			String		@id @default(uuid())
+  displayName		String		@unique
+  email				String		@unique
+  passwordHash		String
+  avatarId			String		@default("default")
+  usernameChangedAt	DateTime?
+  createdAt			DateTime	@default(now())
+  updatedAt			DateTime	@updatedAt
+
+  // One active login session at most for each account.
+  session Session?
+}
+
+model Session {
+  id              String    @id @default(cuid())
+  tokenHash       String    @unique
+  playerAccountId String    @unique
+  createdAt       DateTime  @default(now())
+  expiresAt       DateTime
+  revokedAt       DateTime?
+
+  // The session belongs to exactly one PlayerAccount.
+  playerAccount PlayerAccount @relation(fields: [playerAccountId], references: [accountId], onDelete: Cascade)
+}
+
+model MatchHistory {
+  matchId		String  	@id @map("match_id")
+  winningTeam	String		@map("winning_team")
+  finalScore	String?		@map("final_score") @db.VarChar(7)
+  timestamp		DateTime	@default(now())
+
+  @@index([timestamp(sort: Desc)])
+  @@map("match_histories")
+}

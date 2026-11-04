@@ -1,0 +1,42 @@
+---
+# The list of checks to enable.
+# '*' means everything in that category, '-' means disable.
+Checks: >
+  -*,
+  bugprone-*,
+  modernize-*,
+  performance-*,
+  readability-*,
+  cppcoreguidelines-*,
+  misc-include-cleaner,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers,
+  -readability-braces-around-statements,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -readability-identifier-length,
+  -readability-implicit-bool-conversion,
+  -readability-uppercase-literal-suffix,
+  -readability-isolate-declaration,
+  -bugprone-suspicious-stringview-data-usage,
+  -readability-function-cognitive-complexity,
+  -bugprone-easily-swappable-parameters,
+
+# FORCE clang-tidy to report warnings found in header files
+HeaderFilterRegex: '.*\.hpp$'
+
+# Treat these specific warnings as fatal errors (optional)
+WarningsAsErrors: ''
+
+# Specific configurations for individual checks
+CheckOptions:
+  # Enforce modern initialization in headers (e.g., int _socket{-1};)
+  - key:             modernize-use-default-member-init.UseAssignment
+    value:           'false'
+
+  # Ensure all variables are explicitly initialized
+  - key:             cppcoreguidelines-init-variables.IncludeStyle
+    value:           'llvm'
+...
