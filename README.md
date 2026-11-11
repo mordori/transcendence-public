@@ -3,6 +3,26 @@
 > [!IMPORTANT]
 > THIS REPOSITORY IS A STRIPPED OUT VERSION OF THE PROJECT. BUILDING IT DOES NOT WORK.
 
+## Table of Contents
+
+- [1. Description](#1-description)
+- [2. Project Management](#2-project-management)
+- [3. Technical Stack](#3-technical-stack)
+  - [3.1. Game client](#31-game-client)
+  - [3.2. Frontend](#32-frontend)
+  - [3.3. Backend](#33-backend)
+  - [3.4. DevOps](#34-devops)
+  - [3.5. Justification of major technical choices](#35-justification-of-major-technical-choices)
+- [4. Database Schema](#4-database-schema)
+- [5. Features List](#5-features-list)
+- [6. Service responsibilities](#6-service-responsibilities)
+- [7. Individual Contributions](#7-individual-contributions)
+- [8. Resources](#8-resources)
+  - [8.1. References](#81-references)
+  - [8.2. AI usage](#82-ai-usage)
+- [9. Credits](#9-credits)
+- [10. License](#10-license)
+
 ## 1. Description
 
  is a web-based, real-time 3D multiplayer game platform.
@@ -23,23 +43,8 @@ installation required. Spectators can watch ongoing matches in real time.
 - **Backend services** — a microservice architecture on PostgreSQL (persistent data) and Redis
   (sessions/live state), exposing a documented, API-key-secured and rate-limited public API.
 
-## 2. Instructions
 
-### 2.1. Pre-requisites
-Assumes sudo and Make are installed
-
-Installs CMake, Ninja, curl, Docker, and Emscripten using apt or pacman
-``` bash
-make dependencies
-```
-
-or
-Installs the dependencies without package manager, requires Docker to be installed (experimental)
-``` bash
-make deps-42
-```
-
-## 3. Project Management
+## 2. Project Management
 
 **Organisation.** The team started with offline meetings to agree on the project idea and scope, and
 to divide the work by area — frontend, backend, database, bots and game mechanics — with each member owning their area. A mid-project in-person catch-up was used to review progress and re-balance
@@ -50,9 +55,9 @@ version control and code review.
 
 **Communication.** Discord (group chat, plus voice for pairing and review sessions).
 
-## 4. Technical Stack
+## 3. Technical Stack
 
-### 4.1. Game client
+### 3.1. Game client
 
 The game itself is a custom C++ client compiled to WebAssembly and driven by the React shell.
 
@@ -67,7 +72,7 @@ The game itself is a custom C++ client compiled to WebAssembly and driven by the
 | **stb_image** | Decoding image files into textures. |
 | **FMOD** | Audio playback and mixing. |
 
-### 4.2. Frontend
+### 3.2. Frontend
 
 A React + TypeScript single-page application built with Vite. It provides the account, room and
 lobby experience along with the in-game interface. Gameplay and rendering are handled by the C++
@@ -77,7 +82,7 @@ client running in WebAssembly, while React manages the surrounding UI.
 - **React** — component model for the multi-screen UI.
 - **TypeScript** — static typing across the frontend and its API contracts.
 
-### 4.3. Backend
+### 3.3. Backend
 
 - **Node.js** with Fastify handles account authentication, profiles, room
   operations, and HTTP health endpoints.
@@ -92,12 +97,12 @@ client running in WebAssembly, while React manages the surrounding UI.
 - **uWebSockets** The C++ game server uses uWebSockets for real-time game connections.
   It is separate from the Node.js Fastify application.
 
-### 4.4. DevOps
+### 3.4. DevOps
 
 - **Docker** — containerised builds and a reproducible dev/production environment.
 - **NGINX** — reverse proxy in front of the services (TLS termination, static assets, routing).
 
-### 4.5. Justification of major technical choices
+### 3.5. Justification of major technical choices
 
 The following explains how the technologies fit the implementation.
 
@@ -132,9 +137,9 @@ The following explains how the technologies fit the implementation.
 - **Separate containers**  keep HTTP requests, real-time simulation, AI
   inference, storage, and reverse-proxy responsibilities distinct.
 
-## 5. Database Schema
+## 4. Database Schema
 
-### 5.2. Redis and live game state
+### Redis and live game state
 
 Redis supports temporary room data and communication between the HTTP
 backend and game server.
@@ -149,33 +154,33 @@ players leaving and rooms closing.
 Account-session records are defined in PostgreSQL; they should not be
 confused with temporary room membership.
 
-## 6. Features List
+## 5. Features List
 
 The table below describes the ownership of the main implementation areas.
 
 | Feature | Description | Main contributor(s) |
 | --- | --- | --- |
-| Authentication | Email/password sign-up and login, cookie-based sessions, session restoration, and logout. | jgueon |
-| Session coordination | Rejects another active login for the same account and synchronises browser authentication state across tabs. | jgueon |
-| Profile editing | Editable username and avatar, including a one-hour username-change cooldown. | jgueon, gita |
-| Database access | PostgreSQL schema, Prisma integration, Redis access, and repository abstractions. | jvalkama, with authentication/schema integration by jgueon |
-| Database lifecycle | Startup checks, readiness reporting, shutdown handling, and regression-test reporting. | jvalkama |
-| Game assets | Original team-created 3D models for the game. | myli-pen |
-| Game simulation | Vehicle and ball physics, arena collisions, scoring, and match-state transitions. | myli-pen |
-| Multiplayer | Two teams with three driving slots each, supporting up to six simultaneous drivers. | myli-pen |
-| Spectator mode | Connected users without a driving slot can watch the live match. | myli-pen |
-| AI opponents | A trained policy controls CPU-assigned vehicles through a separate AI service. | cdohanic |
-| Audio | FMOD integration for engine and impact sounds. | cdohanic |
-| Legal pages | Terms of Service, Privacy Policy, and Credits. | gita |
-| Game tickets | Backend-issued short-lived authorisation for game-room connections. | gita, jvalkama |
-| Room interface | Room creation, room browsing, and room entry. | gita, jvalkama |
-| Live lobby | Displays server-owned seats, player information, spectator count, and match state. | gita, myli-pen |
-| Match interface | Countdown, score/timer HUD, match results, and mid-game quit flow. | gita |
-| Real-time networking | WebSocket snapshots, client prediction, server reconciliation, and interpolation. | myli-pen |
-| 3D renderer | Custom C++/WebGPU rendering, materials, lighting, shadows, and grass effects. | myli-pen |
-| Reverse proxy | NGINX routing and TLS termination. | cdohanic |
+| Authentication | Email/password sign-up and login, cookie-based sessions, session restoration, and logout. | Daniel |
+| Session coordination | Rejects another active login for the same account and synchronises browser authentication state across tabs. | Daniel |
+| Profile editing | Editable username and avatar, including a one-hour username-change cooldown. | Daniel, Giang |
+| Database access | PostgreSQL schema, Prisma integration, Redis access, and repository abstractions. | Janne, with authentication/schema integration by Daniel |
+| Database lifecycle | Startup checks, readiness reporting, shutdown handling, and regression-test reporting. | Janne |
+| Game assets | Original team-created 3D models for the game. | Mika |
+| Game simulation | Vehicle and ball physics, arena collisions, scoring, and match-state transitions. | Mika |
+| Multiplayer | Two teams with three driving slots each, supporting up to six simultaneous drivers. | Mika |
+| Spectator mode | Connected users without a driving slot can watch the live match. | Mika |
+| AI opponents | A trained policy controls CPU-assigned vehicles through a separate AI service. | Cristian |
+| Audio | FMOD integration for engine and impact sounds. | Cristian |
+| Legal pages | Terms of Service, Privacy Policy, and Credits. | Giang |
+| Game tickets | Backend-issued short-lived authorisation for game-room connections. | Giang, Janne |
+| Room interface | Room creation, room browsing, and room entry. | Giang, Janne |
+| Live lobby | Displays server-owned seats, player information, spectator count, and match state. | Giang, Mika |
+| Match interface | Countdown, score/timer HUD, match results, and mid-game quit flow. | Giang |
+| Real-time networking | WebSocket snapshots, client prediction, server reconciliation, and interpolation. | Mika |
+| 3D renderer | Custom C++/WebGPU rendering, materials, lighting, shadows, and grass effects. | Mika |
+| Reverse proxy | NGINX routing and TLS termination. | Cristian |
 
-### 7.4. Service responsibilities
+## 6. Service responsibilities
 
 | Compose service | Responsibility |
 | --- | --- |
@@ -187,9 +192,9 @@ The table below describes the ownership of the main implementation areas.
 | `postgres` | Persistent relational storage. |
 | `redis` | Temporary room data and inter-service coordination. |
 
-## 8. Individual Contributions
+## 7. Individual Contributions
 
-### Mika (`https://github.com/mordori`)
+### [Mika](https://github.com/mordori)
 
 - **Tasks**:
   - Implemented the shared C++ game systems and browser game client.
@@ -209,7 +214,7 @@ The table below describes the ownership of the main implementation areas.
   - Integrating rendering, physics, room ownership, and networking.
 
 
-### Daniel (`https://github.com/OneEyedWilly293`)
+### [Daniel](https://github.com/OneEyedWilly293)
 
 - **Tasks**:
   - Implemented backend account registration and login.
@@ -230,7 +235,7 @@ The table below describes the ownership of the main implementation areas.
   - Applying profile validation and cooldown rules consistently.
 
 
-### Janne (`https://github.com/cubicajupiter`)
+### [Janne](https://github.com/cubicajupiter)
 
 - **Tasks**:
   - Integrated PostgreSQL and Redis with the backend.
@@ -248,7 +253,7 @@ The table below describes the ownership of the main implementation areas.
   - Handling expiration boundaries and database connection failures.
   - Separating application readiness from informational regression reports.
 
-### Cristian (`https://github.com/cristichitz`)
+### [Cristian](https://github.com/cristichitz)
 
 - **Tasks**:
   - Built the reinforcement-learning training environment.
@@ -265,7 +270,7 @@ The table below describes the ownership of the main implementation areas.
   - Keeping bot decisions aligned with the game's simulation ticks.
   - Integrating game audio into the browser client.
 
-### Giang (`https://github.com/Kjngita`)
+### [Giang](https://github.com/Kjngita)
 
 - **Tasks**:
   - Built the main player-facing frontend with React and TypeScript,
@@ -285,9 +290,9 @@ The table below describes the ownership of the main implementation areas.
   - Handling transitions between lobby, match, results, and main menu.
 
 
-## 9. Resources
+## 8. Resources
 
-### 9.1. References
+### 8.1. References
 
 Documentation relevant to understanding the implementation:
 
@@ -307,7 +312,7 @@ Documentation relevant to understanding the implementation:
 - Docker Compose documentation — service orchestration, networks, volumes, and secrets.
 - NGINX documentation — reverse proxying and TLS termination.
 
-### 9.2. AI usage
+### 8.2. AI usage
 
 AI assistants were used as development aids for explanation, debugging,
 design discussions, test ideas, and documentation.
@@ -325,14 +330,14 @@ Generated suggestions are not treated as proof that code is correct or
 that a feature is complete. Contributors remain responsible for
 understanding, reviewing, adapting, and testing the material they use.
 
-### Credits
+## 9. Credits
 
 The original 3D models identified in this README were created by the team.
 
 The project also depends on third-party libraries, tools, and runtimes.
 Their licenses and attribution requirements apply separately.
 
-### License
+## 10. License
 
 See `LICENSE.md` for the repository's usage restrictions.
 
